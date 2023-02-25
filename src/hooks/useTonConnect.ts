@@ -11,28 +11,25 @@ export function useTonConnect(): {
   const [tonConnectUI] = useTonConnectUI();
   const wallet = useTonWallet();
 
-
-
   return {
     sender: {
       send: async (args: SenderArguments) => {
 
-        const streamerAddress = Address.parse("EQB_ryLyj9tdIGuwBOqsxg6bPXeCD55J9GiEP4VJhtVwmz8n");
         const commentGuidCell = beginCell()
           .storeUint(666, 64)
           .endCell();
 
         const mainCell = beginCell()
-          .storeAddress(streamerAddress)
+          .storeAddress(args.to)
           .storeRef(commentGuidCell)
           .endCell();
 
-        const boc = mainCell.toBoc().toString('base64url');
+        const boc = mainCell.toBoc().toString('base64');
 
         tonConnectUI.sendTransaction({
           messages: [
             {
-              address: Address.parse("EQB3lEqFKg0mrIxHs20Zg5EAXpzTt7X2KS3vosutA92qq9G2").toString(),
+              address: Address.parse("EQDLffuSGDQxc7TbCOQJP_BxJ541B6K1rC9o7anyCCtPZO3H").toString(),
               amount: args.value.toString(),
               payload: boc,
             },
