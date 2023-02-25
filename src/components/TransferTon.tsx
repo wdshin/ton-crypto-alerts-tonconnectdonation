@@ -15,9 +15,9 @@ export function TransferTon() {
   return (
     <Card>
       <FlexBoxCol>
-        <h3>Transfer TON</h3>
+        <h3>Donate to streamers in crypto</h3>
         <FlexBoxRow>
-          <label>Amount </label>
+          <label>TON Coins </label>
           <Input
             style={{ marginRight: 8 }}
             type="number"
@@ -26,7 +26,7 @@ export function TransferTon() {
           ></Input>
         </FlexBoxRow>
         <FlexBoxRow>
-          <label>To </label>
+          <label>TON Address </label>
           <Input
             style={{ marginRight: 8 }}
             value={streamerAddress}
