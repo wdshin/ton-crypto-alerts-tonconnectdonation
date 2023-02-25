@@ -30,25 +30,17 @@ function App() {
   const { network } = useTonConnect();
 
   return (
-    <StyledApp>
-      <AppContainer>
-        <FlexBoxCol>
-          <FlexBoxRow>
-            <TonConnectButton />
-            <Button>
-              {network
-                ? network === CHAIN.MAINNET
-                  ? "mainnet"
-                  : "testnet"
-                : "N/A"}
-            </Button>
-          </FlexBoxRow>
-          <Counter />
-          <TransferTon />
-          <Jetton />
-        </FlexBoxCol>
-      </AppContainer>
-    </StyledApp>
+    <div>
+      <TonConnectButton />
+      <Button>
+        {network
+          ? network === CHAIN.MAINNET
+            ? "mainnet"
+            : "testnet"
+          : "N/A"}
+      </Button>
+      <TransferTon />
+    </div>
   );
 }
 
