@@ -28,17 +28,21 @@ function App() {
   const { network } = useTonConnect();
 
   return (
-    <div>
-      <TonConnectButton />
-      <Button>
-        {network
-          ? network === CHAIN.MAINNET
-            ? "mainnet"
-            : "testnet"
-          : "N/A"}
-      </Button>
-      <TransferTon />
-    </div>
+
+    <StyledApp>
+      <AppContainer>
+        <TonConnectButton />
+        <Button>
+          {network
+            ? network === CHAIN.MAINNET
+              ? "mainnet"
+              : "testnet"
+            : "N/A"}
+        </Button>
+        <TransferTon />
+      </AppContainer>
+    </StyledApp>
+
   );
 }
 

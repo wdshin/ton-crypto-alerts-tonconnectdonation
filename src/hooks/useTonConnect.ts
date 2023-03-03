@@ -1,9 +1,14 @@
 import { CHAIN } from "@tonconnect/protocol";
-import { beginCell, Sender, SenderArguments, Address } from "ton-core";
+import { beginCell, Address, Slice } from "ton-core";
 import { useTonConnectUI, useTonWallet } from "@tonconnect/ui-react";
+import { DonationArguments, DonationSender } from "../interfaces/DonationSender";
+import { createHash } from 'crypto';
+
+const alertCallbackUrl = "https://donate-service.onrender.com/alert";
+const donationContractAddress = "EQAKOF-lITE_xjF8WNuXtV6I9B3vOGEgvEdc2YX9cojyidlZ";
 
 export function useTonConnect(): {
-  sender: Sender;
+  sender: DonationSender;
   connected: boolean;
   wallet: string | null;
   network: CHAIN | null;
@@ -13,33 +18,56 @@ export function useTonConnect(): {
 
   return {
     sender: {
-      send: async (args: SenderArguments) => {
+      send: async (args: DonationArguments) => {
 
-        const commentGuidCell = beginCell()
-          .storeUint(666, 64)
-          .endCell();
+        const digest = generateDigest(args);
 
-        const mainCell = beginCell()
+        const payloadCell = beginCell()
+          .storeUint(0, 32)
           .storeAddress(args.to)
-          .storeRef(commentGuidCell)
+          .storeStringTail(digest)
           .endCell();
 
-        const boc = mainCell.toBoc().toString('base64');
-
-        tonConnectUI.sendTransaction({
+        const transaction = tonConnectUI.sendTransaction({
           messages: [
             {
-              address: Address.parse("EQDLffuSGDQxc7TbCOQJP_BxJ541B6K1rC9o7anyCCtPZO3H").toString(),
+              address: Address.parse(donationContractAddress).toString(),
               amount: args.value.toString(),
-              payload: boc,
+              payload: payloadCell.toBoc().toString('base64'),
             },
           ],
           validUntil: Date.now() + 5 * 60 * 1000, // 5 minutes for user to approve
         });
+
+        const response = await transaction;
+
+        const data = {
+          amount: args.value,
+          nickname: args.username,
+          wallet_address: args.to.toString(),
+          text: args.message,
+          sign: digest,
+        };
+
+        const status = await fetch(alertCallbackUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+
       },
     },
     connected: !!wallet?.account.address,
     wallet: wallet?.account.address ?? null,
     network: wallet?.account.chain ?? null,
+
   };
+}
+
+function generateDigest(args: DonationArguments) {
+  const body = args.to.toString() + args.value.toString() + args.username + args.message;
+  const digest = createHash('md5').update(body).digest('base64')
+  return digest;
 }
