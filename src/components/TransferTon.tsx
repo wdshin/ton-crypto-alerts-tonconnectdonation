@@ -3,13 +3,24 @@ import { Address, toNano } from "ton";
 import { useTonConnect } from "../hooks/useTonConnect";
 import { Card, FlexBoxCol, FlexBoxRow, Button, Input } from "./styled/styled";
 
-export function TransferTon() {
-  const { sender, connected } = useTonConnect();
-  const [tonAmount, setTonAmount] = useState("");
-  const [address, setAddress] = useState("");
+const useSafeState = (initialState: string | null) => {
+  return useState(initialState ? initialState : '')
+}
 
-  const [username, setUsername] = useState("");
-  const [message, setMessage] = useState("");
+export function TransferTon() {
+  const search = window.location.search;
+  const params = new URLSearchParams(search);
+  const amountArg = params.get('amount');
+  const streamerArg = params.get('streamer');
+  const usernameArg = params.get('username');
+  const messageArg = params.get('message');
+
+  const { sender, connected } = useTonConnect();
+  const [tonAmount, setTonAmount] = useSafeState(amountArg);
+  const [address, setAddress] = useSafeState(streamerArg);
+
+  const [username, setUsername] = useSafeState(usernameArg);
+  const [message, setMessage] = useSafeState(messageArg);
 
   const isValidAmount = () => {
     const n = parseFloat(tonAmount);
@@ -65,7 +76,7 @@ export function TransferTon() {
 
         <FlexBoxRow>
           <label style={{ minWidth: 80 }}>
-            Comment </label>
+            Message </label>
           <Input
             type="text"
             value={message}
