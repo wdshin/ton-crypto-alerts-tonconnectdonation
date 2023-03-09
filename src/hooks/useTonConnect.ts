@@ -22,11 +22,12 @@ export function useTonConnect(): {
 
         const unixtime = Date.now();
         const digest = generateDigest(args, unixtime);
+        const digestBuffer = Buffer.from(digest, 'hex');
 
         const payloadCell = beginCell()
           .storeUint(0, 32)
           .storeAddress(args.to)
-          .storeStringTail(digest)
+          .storeBuffer(digestBuffer)
           .endCell();
 
         const transaction = tonConnectUI.sendTransaction({
