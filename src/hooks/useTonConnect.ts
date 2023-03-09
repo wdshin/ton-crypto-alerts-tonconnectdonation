@@ -20,12 +20,14 @@ export function useTonConnect(): {
     sender: {
       send: async (args: DonationArguments) => {
 
-        const digest = generateDigest(args);
+        const unixtime = Date.now();
+        const digest = generateDigest(args, unixtime);
+        const digestBuffer = Buffer.from(digest, 'hex');
 
         const payloadCell = beginCell()
           .storeUint(0, 32)
           .storeAddress(args.to)
-          .storeStringTail(digest)
+          .storeBuffer(digestBuffer)
           .endCell();
 
         const transaction = tonConnectUI.sendTransaction({
@@ -66,8 +68,9 @@ export function useTonConnect(): {
   };
 }
 
-function generateDigest(args: DonationArguments) {
-  const body = args.to.toString() + args.value.toString() + args.username + args.message;
-  const digest = createHash('md5').update(body).digest('base64')
+// Returns message digest as hex string
+function generateDigest(args: DonationArguments, unixtime: number): string {
+  const body = args.to.toString() + args.value.toString() + args.username + args.message + unixtime;
+  const digest = createHash('md5').update(body).digest('hex')
   return digest;
 }
