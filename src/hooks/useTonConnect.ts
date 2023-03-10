@@ -22,12 +22,13 @@ export function useTonConnect(): {
 
         const unixtime = Date.now();
         const digest = generateDigest(args, unixtime);
-        const digestBuffer = Buffer.from(digest, 'hex');
+        //const digestBuffer = Buffer.from(digest, 'hex');
 
         const payloadCell = beginCell()
           .storeUint(0, 32)
           .storeAddress(args.to)
-          .storeBuffer(digestBuffer)
+          .storeStringTail(digest)
+          //.storeBuffer(digestBuffer)
           .endCell();
 
         const transaction = tonConnectUI.sendTransaction({
@@ -44,7 +45,7 @@ export function useTonConnect(): {
         const response = await transaction;
 
         const data = {
-          amount: args.value,
+          amount: args.value.toString(),
           nickname: args.username,
           wallet_address: args.to.toString(),
           text: args.message,
