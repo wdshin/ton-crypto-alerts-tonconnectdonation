@@ -5,7 +5,7 @@ import { DonationArguments, DonationSender } from "../interfaces/DonationSender"
 import { createHash } from 'crypto';
 
 const alertCallbackUrl = "https://donate-service.onrender.com/alert";
-const donationContractAddress = "EQAKOF-lITE_xjF8WNuXtV6I9B3vOGEgvEdc2YX9cojyidlZ";
+const donationContractAddress = "EQDUutL94icME-YqaLAI4XeeerrfJrB8y3hXnpMqbpNm4L09";
 
 export function useTonConnect(): {
   sender: DonationSender;
@@ -20,12 +20,14 @@ export function useTonConnect(): {
     sender: {
       send: async (args: DonationArguments) => {
 
-        const digest = generateDigest(args);
+        const unixtime = Date.now();
+        const digest = generateDigest(args, unixtime);
+        const digestBuffer = Buffer.from(digest, 'hex');
 
         const payloadCell = beginCell()
           .storeUint(0, 32)
           .storeAddress(args.to)
-          .storeStringTail(digest)
+          .storeBuffer(digestBuffer)
           .endCell();
 
         const transaction = tonConnectUI.sendTransaction({
@@ -66,8 +68,9 @@ export function useTonConnect(): {
   };
 }
 
-function generateDigest(args: DonationArguments) {
-  const body = args.to.toString() + args.value.toString() + args.username + args.message;
-  const digest = createHash('md5').update(body).digest('base64')
+// Returns message digest as hex string
+function generateDigest(args: DonationArguments, unixtime: number): string {
+  const body = args.to.toString() + args.value.toString() + args.username + args.message + unixtime;
+  const digest = createHash('md5').update(body).digest('hex')
   return digest;
 }
