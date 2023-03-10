@@ -5,7 +5,7 @@ import App from "./App";
 import "./index.css";
 // this manifest is used temporarily for development purposes
 const manifestUrl =
-  "https://raw.githubusercontent.com/ChemicalLogic/tonconnectdonation/main/manifest/tonconnect-manifest.json";
+  "https://raw.githubusercontent.com/TonCryptoAlerts/tonconnectdonation/main/manifest/tonconnect-manifest.json";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: false } },
