@@ -5,7 +5,7 @@ import { DonationArguments, DonationSender } from "../interfaces/DonationSender"
 import { createHash } from 'crypto';
 
 const alertCallbackUrl = "https://donate-service.onrender.com/alert";
-const donationContractAddress = "EQAKOF-lITE_xjF8WNuXtV6I9B3vOGEgvEdc2YX9cojyidlZ";
+const donationContractAddress = "EQDUutL94icME-YqaLAI4XeeerrfJrB8y3hXnpMqbpNm4L09";
 
 export function useTonConnect(): {
   sender: DonationSender;
