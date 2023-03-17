@@ -24,7 +24,7 @@ export function TransferTon() {
 
   const isValidAmount = () => {
     const n = parseFloat(tonAmount);
-    return !Number.isNaN(n) && parseFloat(tonAmount) >= 0.01;
+    return !Number.isNaN(n) && parseFloat(tonAmount) >= 0.1;
   };
 
   //Address.isAddress() don't work, so using TonWeb's solution https://github.com/toncenter/tonweb/blob/master/src/utils/Address.js
